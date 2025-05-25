@@ -6,6 +6,7 @@ from models import db, Cliente, Producto, Factura, DetalleFactura, MovimientoPro
 from datetime import datetime
 import pytz
 import re
+import os
 
 app = Flask(__name__)
 app.secret_key = 'clave_secreta'
