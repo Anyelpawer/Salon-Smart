@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Necesario para diseño responsivo -->
+    <title>Facturación - Salón Smart</title>
+
+    <!-- Enlace a la fuente "The Seasons" -->
+    <link href="https://fonts.cdnfonts.com/css/the-seasons" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'The Seasons', serif;
+            background-color:  #f6f1eb;
+            margin: 0;
+            padding: 40px;
+        }
+
+        form {
+            background-color: #ffffff;
+            max-width: 400px;
+            margin: 130px ;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.9);
+            margin-top: auto;
+        }
+        .contenedor {
+            background-color: #ffffff;
+            padding: 3% 7%;
+            border: 4px solid black;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+            max-width: 800px;
+            width: 100%;
+            margin: 58px auto;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            color:  #010101;
+            font-weight: bold;
+        }
+
+        input[type="number"],
+        input[list] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 12px 20px;
+            background-color:  #dba958;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #dba958;
+        }
+
+        .btn-volver {
+            display: block;
+            text-align: center;
+            margin: -115px auto 0 auto;
+            padding: 10px 20px;
+            background-color: #dba958;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            width: fit-content;
+        }
+
+        .btn-volver:hover {
+            background-color: #dba958;
+        }
+    </style>
+    <script>
+        // Validar si el cliente y producto seleccionados están en las opciones
+        function validarFormulario() {
+            const clienteInput = document.getElementById('cliente_id');
+            const productoInput = document.getElementById('producto_id');
+            const clientes = Array.from(document.getElementById('clientes').options).map(opt => opt.value);
+            const productos = Array.from(document.getElementById('productos').options).map(opt => opt.value);
+
+            if (!clientes.includes(clienteInput.value)) {
+                alert("Por favor seleccioná un cliente válido de la lista.");
+                clienteInput.focus();
+                return false;
+            }
+
+            if (!productos.includes(productoInput.value)) {
+                alert("Por favor seleccioná un producto válido de la lista.");
+                productoInput.focus();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+  <div class="contenedor">
+
+    {% if session['usuario'] == 'raquel' %}
+        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; margin-left: -70px; margin-top: -40px;  margin-bottom: 30px;">
+            <img src="{{ url_for('static', filename='images/logo3.jpg') }}" alt="Logo" style="width: 30px;">
+            <span style="font-size: 32px; color: #333;">Salon Smart</span>
+        </div>
+        
+        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; margin-left: 175px; margin-top: -40px;  margin-bottom: 30px;">
+            <span style="font-size: 32px; color: #333;">Facturación</span>
+        </div>
+
+        <form method="POST" onsubmit="return validarFormulario()">
+                <!-- Cliente -->
+            <label for="cliente_id">Buscar Cliente:</label>
+            <input list="clientes" name="cliente_id" id="cliente_id" required
+                placeholder="Escribí el nombre del cliente"
+                pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ0-9\s\.-]+" 
+               title="Solo se permiten letras, números, espacios, puntos y guiones.">
+            <datalist id="clientes">
+                {{ lista_clientes|safe }}
+            </datalist>
+
+             <!-- Producto -->
+            <label for="producto_id">Seleccionar Producto:</label>
+            <input list="productos" name="producto_id" id="producto_id" required 
+                placeholder="Escribí el nombre del producto" 
+                pattern="[A-Za-z0-9\s]+" 
+                title="Solo se permiten letras, números y espacios.">
+            <datalist id="productos">
+                {{ lista_productos|safe }}
+            </datalist>
+
+            <!-- Cantidad -->
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantidad" id="cantidad" min="1" required 
+                title="La cantidad debe ser al menos 1.">
+
+            <button type="submit">Realizar Factura</button>
+        </form>
+        <a href="/" class="btn-volver">← Volver al Inicio</a>
+
+    {% else %}
+        <h1>Hola, {{ session['nombre'] }}</h1>
+        <p>Esta es tu plataforma personal de gestión.</p>
+        <a href="{{ url_for('logout') }}" class="btn-volver">Cerrar sesión</a>
+    {% endif %}
+
+  </div>  
+</body>
+</html>

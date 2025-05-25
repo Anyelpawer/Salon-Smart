@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movimientos de Inventario</title>
+</head>
+<body>
+
+    {% if session['usuario'] == 'raquel' %}
+        <h1>Historial de Movimientos de Productos</h1>
+        <a href="/">Volver al Inicio</a>
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Producto ID</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Fecha</th>
+            </tr>
+            {% for m in movimientos %}
+            <tr>
+                <td>{{ m.id }}</td>
+                <td>{{ m.producto_id }}</td>
+                <td>{{ m.tipo }}</td>
+                <td>{{ m.cantidad }}</td>
+                <td>{{ m.fecha }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h1>Hola, {{ session['nombre'] }}</h1>
+        <p>Esta es tu plataforma personal de gestión.</p>
+        <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+    {% endif %}
+
+</body>
+</html>

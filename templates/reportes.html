@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reportes de Ventas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .tabla-facturas {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .tabla-facturas th {
+            background-color: #dba958;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .tabla-facturas td {
+            background-color: #f5f5f5;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tabla-facturas tr:hover {
+            background-color: #e0e0e0;
+        }
+
+        .tabla-scroll {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 3px solid black;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+            width: fit-content; /* importante para que se centre el ancho real */
+            margin: 0 auto;      /* centra horizontalmente */
+            padding: 30px 20px;
+        }
+
+        .boton-regresar {
+            background-color: #dba958;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .boton-regresar:hover {
+            background-color: #b88540;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Reportes de Ventas</h1>
+
+<!-- Formulario de búsqueda -->
+<form method="GET" action="/reportes" onsubmit="return validarBusqueda()" style="margin-bottom: 20px;">
+    <label for="busqueda_id">Buscar por ID de Factura:</label>
+    <input type="number" name="busqueda_id" id="busqueda_id" min="1" required placeholder="Ingresá el ID de la factura"
+        title="Solo se permiten números mayores a 0">
+    <button type="submit">Buscar</button>
+</form>
+
+<!-- Verificación si hay resultados -->
+{% if facturas %}
+<div class="tabla-scroll">
+    <table class="tabla-facturas">
+        <tr>
+            <th>ID Factura</th>
+            <th>Cliente</th>
+            <th>Total ($)</th>
+            <th>Fecha</th>
+            <th>Detalle</th>
+            <th>Imprimir</th>
+        </tr>
+        {% for factura in facturas %}
+        <tr>
+            <td>{{ factura.id }}</td>
+            <td>{{ factura.cliente.nombre }}</td>
+            <td>{{ factura.total }}</td>
+            <td>{{ factura.fecha }}</td>
+            <td><a href="/detalle_factura/{{ factura.id }}">Ver Detalle</a></td>
+            <td><a href="/recibo/{{ factura.id }}" target="_blank">🖨️ Imprimir</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% else %}
+<p>No se encontraron facturas con ese ID.</p>
+{% endif %}
+
+<!-- Botón Volver al Inicio -->
+<a href="/" class="boton-regresar">← Volver al Inicio</a>
+
+<!-- Validación con JS -->
+<script>
+    function validarBusqueda() {
+        const input = document.getElementById("busqueda_id");
+        if (!input.value || parseInt(input.value) < 1) {
+            alert("Por favor, ingresá un ID de factura válido (mayor a 0).");
+            input.focus();
+            return false;
+        }
+        return true;
+    }
+</script>
+
+</body>
+</html>

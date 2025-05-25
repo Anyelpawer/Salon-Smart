@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Necesario para diseño responsivo -->
+    <title>Productos Registrados</title>
+
+    <!-- Fuente personalizada -->
+    <link href="https://fonts.cdnfonts.com/css/the-seasons" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'The Seasons', serif;
+            background: #f6f1eb;
+            padding: 40px;
+        }
+
+        .contenedor {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 1000px;
+            margin: 150px auto;
+            box-shadow: 0 0 12px rgba(0,0,0,0.4);
+            border: 4px solid black;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 8px 12px;
+            background-color: #dba958;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #c18d40;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border: 4px solid #dba958;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+        }
+        .tabla-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #dba958;
+            border-radius: 8px;
+            box-shadow: 0 0px 15px rgba(226, 175, 33, 0.9);
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #000000;
+            text-align: left;
+        }
+
+        th {
+            background-color: #dba958;
+            color: #000;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-stock {
+            margin: 0 2px;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        a.btn-volver {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            background-color: #777;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+        }
+
+        a.btn-volver:hover {
+            background-color: #555;
+        }
+
+        .mensaje {
+            text-align: center;
+            color: #555;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="contenedor">
+
+    {% if session['usuario'] == 'raquel' %}
+        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; margin-left: 5%; margin-top: -1%;  margin-bottom: 30px;">
+            <img src="{{ url_for('static', filename='images/logo3.jpg') }}" alt="Logo" style="width: 35px;">
+            <span style="font-size: 30px; color: #333;">Salon Smart</span>
+        </div>
+
+        <h1>Productos Registrados</h1>
+
+        <!-- Formulario de búsqueda -->
+        <form method="GET" action="/buscar_producto">
+            <input type="text" name="nombre" placeholder="Buscar producto por nombre">
+            <button type="submit">Buscar</button>
+        </form>
+
+        {% if productos is not none %}
+            {% if productos %}
+            <div class="tabla-scroll">
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Fecha de Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                    {% for producto in productos %}
+                    <tr>
+                        <td>{{ producto.id }}</td>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.descripcion }}</td>
+                        <td>${{ "%.2f"|format(producto.precio) }}</td>
+                        <td>{{ producto.stock }}</td>
+                        <td>{{ producto.fecha_registro.strftime('%d/%m/%Y %H:%M') if producto.fecha_registro else 'N/A' }}</td>
+                        <td>
+                            <form method="POST" action="/productos-registrados" style="display:inline;">
+                                <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                                <input type="hidden" name="accion" value="sumar">
+                                <button class="btn-stock" type="submit">➕</button>
+                            </form>
+                            <form method="POST" action="/productos-registrados" style="display:inline;">
+                                <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                                <input type="hidden" name="accion" value="restar">
+                                <button class="btn-stock" type="submit">➖</button>
+                            </form>
+                            <form id="formEliminar{{ producto.id }}" method="POST" action="{{ url_for('eliminar_producto', producto_id=producto.id) }}" style="display:inline;">
+                                <button class="btn-stock btn-delete" type="button" onclick="confirmarEliminacion('{{ producto.id }}')">🗑️</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% else %}
+                <p class="mensaje">No se encontró ningún producto con ese nombre.</p>
+            {% endif %}
+        {% else %}
+            <p class="mensaje">No hay productos registrados.</p>
+        {% endif %}
+
+        <a href="/inventario" class="btn-volver">← Volver al Inventario</a>
+    {% else %}
+        <h1>Hola, {{ session['nombre'] }}</h1>
+        <p>Esta es tu plataforma personal de gestión.</p>
+        <a href="{{ url_for('logout') }}" class="btn-volver" style="display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #dba958; color: white; border-radius: 6px; text-decoration: none;">Cerrar sesión</a>
+    {% endif %}
+
+</div>
+
+<!-- Script para confirmación de eliminación -->
+<script>
+function confirmarEliminacion(id) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¡No podrás deshacer esta acción!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('formEliminar' + id).submit();
+        }
+    });
+}
+</script>
+
+</body>
+</html>

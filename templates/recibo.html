@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recibo de Factura</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f1f1; /* Fondo pastel suave */
+            margin: 0;
+            padding: 40px;
+        }
+        .recibo {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            width: 750px;
+            margin: auto;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .recibo h2 {
+            text-align: center;
+            color: #070707; /* Título en color rosa pastel */
+            margin-bottom: 25px;
+        }
+        .datos {
+            margin-bottom: 20px;
+        }
+        .datos p {
+            margin: 5px 0;
+        }
+        .datos strong {
+            display: inline-block;
+            width: 140px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        th {
+            background-color: #dba958; /* Encabezado rosa pastel */
+            color: #ffffff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .totales {
+            text-align: right;
+            font-weight: bold;
+            color: #333;
+        }
+        .botones {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn-imprimir,
+        .btn-volver {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .btn-imprimir {
+            background-color: #dba958; /* Botón imprimir rosa pastel */
+            color: #ffffff;
+        }
+        .btn-volver {
+            background-color: #dba958; /* Botón volver en tono rosa suave */
+            color: #ffffff;
+        }
+        @media print {
+            .btn-imprimir, .btn-volver {
+                display: none;
+            }
+            body {
+                background-color: white;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% if session['usuario'] == 'raquel' %}
+    <div class="recibo" id="recibo-content">
+        <h2>Recibo de Factura</h2>
+
+        <div class="datos">
+            <p><strong>Cliente:</strong> {{ cliente.nombre }}</p>
+            <p><strong>Correo:</strong> {{ cliente.correo }}</p>
+            <p><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+            <p><strong>Fecha:</strong> {{ factura.fecha.strftime("%d/%m/%Y %I:%M %p") }}</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in detalles %}
+                <tr>
+                    <td>{{ productos[detalle.producto_id].nombre }}</td>
+                    <td>{{ detalle.cantidad }}</td>
+                    <td>${{ "%.2f"|format(detalle.precio_unitario) }}</td>
+                    <td>${{ "%.2f"|format(detalle.cantidad * detalle.precio_unitario) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="totales">
+            <p>Impuesto (15%): ${{ "%.2f"|format(factura.impuesto) }}</p>
+            <p>Total a pagar: ${{ "%.2f"|format(factura.total) }}</p>
+        </div>
+
+        <div class="botones">
+            <button onclick="window.print()" class="btn-imprimir">🖨️ Imprimir Recibo</button>
+            <a href="{{ url_for('facturacion') }}" class="btn-volver">🔄 Nueva Factura</a>
+        </div>
+    </div>
+    {% else %}
+        <h1>Hola, {{ session['nombre'] }}</h1>
+        <p>Esta es tu plataforma personal de gestión.</p>
+        <a href="{{ url_for('logout') }}" style="display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #dba958; color: white; border-radius: 6px; text-decoration: none;">Cerrar sesión</a>
+    {% endif %}
+
+</body>
+</html>

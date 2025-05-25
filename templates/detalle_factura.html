@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de la Factura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fcfcfc;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        .factura-info {
+            margin-bottom: 20px;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 900px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #dba958;
+            color: white;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #dba958;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Detalle de la Factura</h1>
+    <div class="factura-info">
+        <h2>Factura #{{ factura.id }}</h2>
+        <p>Cliente: {{ factura.cliente.nombre }}</p>
+        <p>Fecha: {{ factura.fecha }}</p>
+        <p>Total: ${{ factura.total }}</p>
+    </div>
+
+    <h3>Productos Comprados:</h3>
+
+    <table>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Total (con IVA)</th>
+        </tr>
+        {% set subtotal = 0 %}
+        {% for detalle in factura.detalles %}
+        {% set total_producto = detalle.cantidad * detalle.producto.precio * 1.15 %}
+        {% set subtotal = subtotal + total_producto %}
+        <tr>
+            <td>{{ detalle.producto.nombre }}</td>
+            <td>{{ detalle.cantidad }}</td>
+            <td>${{ detalle.producto.precio }}</td>
+            <td>${{ total_producto | round(2) }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+    <a class="volver" href="/facturacion">← Volver a la Facturación</a>
+
+</body>
+
+</html>

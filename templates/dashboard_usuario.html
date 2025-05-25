@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenida - Salón Smart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f1eb;
+            text-align: center;
+            padding: 100px;
+        }
+        h1 {
+            color: #101010;
+        }
+        .botones {
+            margin-top: 30px;
+        }
+        a {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 20px;
+            background-color: #dba958;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        a:hover {
+            background-color: #a1875c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hola, Bienvenido {{ nombre }} a SALÓN SMART</h1>
+
+    <div class="botones">
+        <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+    </div>
+</body>
+</html>

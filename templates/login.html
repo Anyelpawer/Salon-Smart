@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión - Salón Smart</title>
+
+    <link href="https://fonts.cdnfonts.com/css/the-seasons" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'The Seasons', serif;
+            background-color: #f6f1eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .contenedor {
+            background-color: #ffffff;
+            border: 4px solid black;
+            border-radius: 10px;
+            padding: 105px 80px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #101010;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #555;
+            text-align: left;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 10px;
+            background-color: #dba958;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #dba958;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background-color: #dba958;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #a1875c;
+        }
+
+        .enlace {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .enlace:hover {
+            text-decoration: underline;
+        }
+
+        .volver-inicio {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .volver-inicio:hover {
+            text-decoration: underline;
+        }
+
+        .flash-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+        <div
+            style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; margin-left: -50px; margin-top: -80px;  margin-bottom: 30px;">
+            <img src="{{ url_for('static', filename='images/logo3.jpg') }}" alt="Logo" style="width: 40px;">
+            <span style="font-size: 29px; color: #333;">Salon Smart</span>
+        </div>
+        <h1>Iniciar Sesión</h1>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('login') }}" method="POST">
+            <label for="usuario">Usuario:</label>
+            <input type="text" name="usuario" id="usuario" required placeholder="Ej: raquel">
+
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" name="contraseña" id="contraseña" required placeholder="Tu contraseña">
+
+            <input type="submit" value="Ingresar">
+        </form>
+        <a href="{{ url_for('index') }}" class="volver-inicio">← Volver al Inicio</a>
+    </div>
+
+</body>
+
+</html>
