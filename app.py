@@ -8,7 +8,7 @@ import pytz
 import re
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
 # Configuración de la base de datos
@@ -354,4 +354,5 @@ with app.app_context():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Usa el puerto que Render le asigne
+    app.run(host="0.0.0.0", port=port)
