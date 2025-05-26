@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Necesario para diseño responsivo -->
@@ -21,7 +22,7 @@
             border-radius: 20px;
             max-width: 1000px;
             margin: 150px auto;
-            box-shadow: 0 0 12px rgba(0,0,0,0.4);
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
             border: 4px solid black;
         }
 
@@ -65,6 +66,7 @@
             overflow: hidden;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
         }
+
         .tabla-scroll {
             max-height: 400px;
             overflow-y: auto;
@@ -73,7 +75,8 @@
             box-shadow: 0 0px 15px rgba(226, 175, 33, 0.9);
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px;
             border-bottom: 1px solid #000000;
             text-align: left;
@@ -104,14 +107,14 @@
             display: inline-block;
             margin-top: 30px;
             text-decoration: none;
-            background-color: #777;
+            background-color: #dba958;
             color: white;
             padding: 10px 20px;
             border-radius: 6px;
         }
 
         a.btn-volver:hover {
-            background-color: #555;
+            background-color: #dba958;
         }
 
         .mensaje {
@@ -125,12 +128,14 @@
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
 
-<div class="contenedor">
+    <div class="contenedor">
 
-    {% if session['usuario'] == 'raquel' %}
-        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; margin-left: 5%; margin-top: -1%;  margin-bottom: 30px;">
+        {% if session['usuario'] == 'raquel' %}
+        <div
+            style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; margin-left: 5%; margin-top: -1%;  margin-bottom: 30px;">
             <img src="{{ url_for('static', filename='images/Logo3.jpg') }}" alt="Logo" style="width: 35px;">
             <span style="font-size: 30px; color: #333;">Salon Smart</span>
         </div>
@@ -144,80 +149,87 @@
         </form>
 
         {% if productos is not none %}
-            {% if productos %}
-            <div class="tabla-scroll">
-                <table>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Stock</th>
-                        <th>Fecha de Registro</th>
-                        <th>Acciones</th>
-                    </tr>
-                    {% for producto in productos %}
-                    <tr>
-                        <td>{{ producto.id }}</td>
-                        <td>{{ producto.nombre }}</td>
-                        <td>{{ producto.descripcion }}</td>
-                        <td>${{ "%.2f"|format(producto.precio) }}</td>
-                        <td>{{ producto.stock }}</td>
-                        <td>{{ producto.fecha_registro.strftime('%d/%m/%Y %H:%M') if producto.fecha_registro else 'N/A' }}</td>
-                        <td>
-                            <form method="POST" action="/productos-registrados" style="display:inline;">
-                                <input type="hidden" name="producto_id" value="{{ producto.id }}">
-                                <input type="hidden" name="accion" value="sumar">
-                                <button class="btn-stock" type="submit">➕</button>
-                            </form>
-                            <form method="POST" action="/productos-registrados" style="display:inline;">
-                                <input type="hidden" name="producto_id" value="{{ producto.id }}">
-                                <input type="hidden" name="accion" value="restar">
-                                <button class="btn-stock" type="submit">➖</button>
-                            </form>
-                            <form id="formEliminar{{ producto.id }}" method="POST" action="{{ url_for('eliminar_producto', producto_id=producto.id) }}" style="display:inline;">
-                                <button class="btn-stock btn-delete" type="button" onclick="confirmarEliminacion('{{ producto.id }}')">🗑️</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            {% else %}
-                <p class="mensaje">No se encontró ningún producto con ese nombre.</p>
-            {% endif %}
+        {% if productos %}
+        <div class="tabla-scroll">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Fecha de Registro</th>
+                    <th>Acciones</th>
+                </tr>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.descripcion }}</td>
+                    <td>${{ "%.2f"|format(producto.precio) }}</td>
+                    <td>{{ producto.stock }}</td>
+                    <td>{{ producto.fecha_registro.strftime('%d/%m/%Y %H:%M') if producto.fecha_registro else 'N/A' }}
+                    </td>
+                    <td>
+                        <form method="POST" action="/productos-registrados" style="display:inline;">
+                            <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                            <input type="hidden" name="accion" value="sumar">
+                            <button class="btn-stock" type="submit">➕</button>
+                        </form>
+                        <form method="POST" action="/productos-registrados" style="display:inline;">
+                            <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                            <input type="hidden" name="accion" value="restar">
+                            <button class="btn-stock" type="submit">➖</button>
+                        </form>
+                        <form id="formEliminar{{ producto.id }}" method="POST"
+                            action="{{ url_for('eliminar_producto', producto_id=producto.id) }}"
+                            style="display:inline;">
+                            <button class="btn-stock btn-delete" type="button"
+                                onclick="confirmarEliminacion('{{ producto.id }}')">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
         {% else %}
-            <p class="mensaje">No hay productos registrados.</p>
+        <p class="mensaje">No se encontró ningún producto con ese nombre.</p>
+        {% endif %}
+        {% else %}
+        <p class="mensaje">No hay productos registrados.</p>
         {% endif %}
 
         <a href="/inventario" class="btn-volver">← Volver al Inventario</a>
-    {% else %}
+        {% else %}
         <h1>Hola, {{ session['nombre'] }}</h1>
         <p>Esta es tu plataforma personal de gestión.</p>
-        <a href="{{ url_for('logout') }}" class="btn-volver" style="display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #dba958; color: white; border-radius: 6px; text-decoration: none;">Cerrar sesión</a>
-    {% endif %}
+        <a href="{{ url_for('logout') }}" class="btn-volver"
+            style="display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #dba958; color: white; border-radius: 6px; text-decoration: none;">Cerrar
+            sesión</a>
+        {% endif %}
 
-</div>
+    </div>
 
-<!-- Script para confirmación de eliminación -->
-<script>
-function confirmarEliminacion(id) {
-    Swal.fire({
-        title: '¿Estás seguro?',
-        text: "¡No podrás deshacer esta acción!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e74c3c',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById('formEliminar' + id).submit();
+    <!-- Script para confirmación de eliminación -->
+    <script>
+        function confirmarEliminacion(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás deshacer esta acción!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formEliminar' + id).submit();
+                }
+            });
         }
-    });
-}
-</script>
+    </script>
 
 </body>
+
 </html>
