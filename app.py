@@ -367,11 +367,18 @@ def editar_cliente(id):
 
 @app.route('/borrar_cliente/<int:id>')
 def borrar_cliente(id):
-    cliente = Cliente.query.get_or_404(id)
-    db.session.delete(cliente)
-    db.session.commit()
-    flash('Cliente borrado exitosamente.', 'success')
-    return redirect(url_for('clientes_registrados'))
+    try:
+        cliente = Cliente.query.get(id)
+        if cliente:
+            db.session.delete(cliente)
+            db.session.commit()
+            return redirect(url_for('clientes_registrados'))
+        else:
+            return "Cliente no encontrado", 404
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error al borrar cliente: {e}")
+        return "Ocurrió un error al intentar borrar el cliente", 500
 
 with app.app_context():
     db.create_all()
