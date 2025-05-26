@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Clientes Registrados</title>
-    
+
     <!-- Fuente personalizada -->
     <link href="https://fonts.cdnfonts.com/css/the-seasons" rel="stylesheet">
 
@@ -51,7 +52,8 @@
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
         }
 
-        th, td {
+        th,
+        td {
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #000000;
@@ -110,64 +112,98 @@
             text-decoration: underline;
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
+
 <body>
 
-    <div class="contenedor" style="border: 4px solid black; box-shadow: 0 0 10px rgba(0, 0, 0, 12); border-radius: 20px;">
-        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; margin-left: -50px; margin-top: -68px;  margin-bottom: 30px;">
+    <div class="contenedor"
+        style="border: 4px solid black; box-shadow: 0 0 10px rgba(0, 0, 0, 12); border-radius: 20px;">
+        <div
+            style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; margin-left: -50px; margin-top: -68px;  margin-bottom: 30px;">
             <img src="{{ url_for('static', filename='images/Logo3.jpg') }}" alt="Logo" style="width: 50px;">
             <span style="font-size: 32px; color: #333;">Salon Smart</span>
         </div>
 
         {% if session['usuario'] == 'raquel' %}
-        
-            <h1>Clientes Registrados</h1>
 
-            <form method="GET" action="{{ url_for('clientes_registrados') }}" style="margin-bottom: 20px;">
-                <input type="text" name="busqueda" placeholder="Buscar por nombre" value="{{ request.args.get('busqueda', '') }}" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                <button type="submit" style="padding: 8px 15px; background-color: #dba958; color: white; border: none; border-radius: 5px;">Buscar</button>
-            </form>
+        <h1>Clientes Registrados</h1>
 
-            <div class="tabla-container">
-                <table>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Correo</th>
-                        <th>Teléfono</th>
-                        <th>Fecha de Ingreso</th>
-                        <th>Acciones</th>
-                    </tr>
-                    {% for cliente in clientes %}
-                    <tr>
-                        <td>{{ cliente.nombre }}</td>
-                        <td>{{ cliente.correo }}</td>
-                        <td>{{ cliente.telefono }}</td>
-                        <td>
-                            {% if cliente.fecha_ingreso %}
-                                {{ cliente.fecha_ingreso.strftime('%d-%m-%Y %H:%M') }}
-                            {% else %}
-                                Sin fecha
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="acciones-link">Editar</a>
-                            <a href="{{ url_for('borrar_cliente', id=cliente.id) }}" class="acciones-link" onclick="return confirm('¿Estás seguro de que deseas borrar este cliente?');">Borrar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
+        <form method="GET" action="{{ url_for('clientes_registrados') }}" style="margin-bottom: 20px;">
+            <input type="text" name="busqueda" placeholder="Buscar por nombre"
+                value="{{ request.args.get('busqueda', '') }}"
+                style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+            <button type="submit"
+                style="padding: 8px 15px; background-color: #dba958; color: white; border: none; border-radius: 5px;">Buscar</button>
+        </form>
 
-            <a href="{{ url_for('registro') }}" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
-                ← Volver al registro
-            </a>
+        <div class="tabla-container">
+            <table>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Fecha de Ingreso</th>
+                    <th>Acciones</th>
+                </tr>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.nombre }}</td>
+                    <td>{{ cliente.correo }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>
+                        {% if cliente.fecha_ingreso %}
+                        {{ cliente.fecha_ingreso.strftime('%d-%m-%Y %H:%M') }}
+                        {% else %}
+                        Sin fecha
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="acciones-link">Editar</a>
+                        <a href="#" class="acciones-link" onclick="confirmarBorradoCliente('{{ cliente.id }}')">Borrar</a>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <a href="{{ url_for('registro') }}"
+            style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
+            ← Volver al registro
+        </a>
 
         {% else %}
-            <h1>Hola, {{ session['nombre'] }}</h1>
-            <p>Esta es tu plataforma personal de gestión.</p>
-            <a href="{{ url_for('logout') }}" style="display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #dba958; color: white; border-radius: 6px; text-decoration: none;">Cerrar sesión</a>
+        <h1>Hola, {{ session['nombre'] }}</h1>
+        <p>Esta es tu plataforma personal de gestión.</p>
+        <a href="{{ url_for('logout') }}"
+            style="display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #dba958; color: white; border-radius: 6px; text-decoration: none;">Cerrar
+            sesión</a>
         {% endif %}
     </div>
+    <script>
+        function confirmarBorradoCliente(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción eliminará permanentemente al cliente.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, borrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/borrar_cliente/" + id;
+                }
+            });
+        }
+    </script>
+
+
 
 </body>
+
 </html>
