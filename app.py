@@ -347,6 +347,38 @@ def productos_registrados():
 
     productos = Producto.query.all()
     return render_template('productos_registrados.html', productos=productos)
+     
+@app.route('/editar_cliente/<int:id>', methods=['GET', 'POST'])
+def editar_cliente(id):
+    cliente = Cliente.query.get_or_404(id)
+    if request.method == 'POST':
+        cliente.nombre = request.form['nombre']
+        cliente.correo = request.form['correo']
+        cliente.telefono = request.form['telefono']
+        try:
+            db.session.commit()
+            flash('Cliente actualizado con éxito')
+            return redirect(url_for('clientes_registrados'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error al actualizar cliente')
+            print(e)
+    return render_template('editar_cliente.html', cliente=cliente)
+
+@app.route('/borrar_cliente/<int:id>')
+def borrar_cliente(id):
+    cliente = Cliente.query.get_or_404(id)
+    try:
+        db.session.delete(cliente)
+        db.session.commit()
+        flash('Cliente eliminado con éxito')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error al borrar cliente')
+        print(e)
+    return redirect(url_for('clientes_registrados'))
+
+
 
 with app.app_context():
     db.create_all()

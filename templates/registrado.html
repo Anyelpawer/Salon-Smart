@@ -32,9 +32,9 @@
 
         .tabla-container {
             margin-top: 20px;
-            max-height: 300px; /* Ajusta la altura según lo necesites */
-            overflow-y: auto; /* Scroll vertical cuando la tabla sea más grande */
-            border: 1px solid #dba958; /* Borde visible */
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dba958;
             border-radius: 8px;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
             padding: 10px;
@@ -99,6 +99,16 @@
             font-size: 32px;
             color: #333;
         }
+
+        .acciones-link {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .acciones-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -125,6 +135,7 @@
                         <th>Correo</th>
                         <th>Teléfono</th>
                         <th>Fecha de Ingreso</th>
+                        <th>Acciones</th>
                     </tr>
                     {% for cliente in clientes %}
                     <tr>
@@ -137,6 +148,10 @@
                             {% else %}
                                 Sin fecha
                             {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="acciones-link">Editar</a>
+                            <a href="{{ url_for('borrar_cliente', id=cliente.id) }}" class="acciones-link" onclick="return confirm('¿Estás seguro de que deseas borrar este cliente?');">Borrar</a>
                         </td>
                     </tr>
                     {% endfor %}
