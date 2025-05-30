@@ -12,7 +12,7 @@ app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
 # Configuración de la base de datos para persistencia en Render
-PERSISTENT_DIR = '/mnt/data'
+PERSISTENT_DIR = os.environ.get("RENDER_DATA_DIR", "./data")
 DB_FILENAME = 'salon_smart.db'
 DB_PATH = os.path.join(PERSISTENT_DIR, DB_FILENAME)
 
