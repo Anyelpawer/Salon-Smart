@@ -95,6 +95,18 @@ def verificar_raquel():
         return f'✅ Raquel existe: {user.nombre}'
     else:
         return '❌ Raquel no existe.'
+    
+@app.route('/crear_raquel')
+def crear_raquel():
+    user = Usuario.query.filter_by(usuario='raquel').first()
+    if not user:
+        nueva = Usuario(nombre='Raquel', usuario='raquel', contraseña='12345')
+        db.session.add(nueva)
+        db.session.commit()
+        return '✅ Raquel creada correctamente con contraseña 1234'
+    else:
+        return '⚠️ Raquel ya existe.'
+
 
 
 
