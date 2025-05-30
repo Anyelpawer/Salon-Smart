@@ -11,20 +11,8 @@ import os
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
-# Configuración de la base de datos para persistencia en Render
-PERSISTENT_DIR = os.environ.get("RENDER_DATA_DIR", "./data")
-DB_FILENAME = 'salon_smart.db'
-DB_PATH = os.path.join(PERSISTENT_DIR, DB_FILENAME)
-
-# Crear el directorio si no existe
-os.makedirs(PERSISTENT_DIR, exist_ok=True)
-
-# Mover la base de datos si está en el root del proyecto
-if os.path.exists(DB_FILENAME) and not os.path.exists(DB_PATH):
-    os.rename(DB_FILENAME, DB_PATH)
-
-# Configurar SQLAlchemy con la nueva ruta
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/database.db"
+# Configuración de la base de datos
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salon_smart.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
