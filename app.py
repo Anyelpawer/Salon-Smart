@@ -95,10 +95,10 @@ def dashboard_raquel():
 def verificar_raquel():
     user = Usuario.query.filter_by(usuario='raquel').first()
     if user:
-        return f'✅ Raquel existe: {user.nombre}'
+        return f"Usuario Raquel existe. Contraseña: {user.contraseña}"
     else:
-        return '❌ Raquel no existe.'
-    
+        return "Usuario Raquel no encontrado"
+
 @app.route('/crear_raquel')
 def crear_raquel():
     user = Usuario.query.filter_by(usuario='raquel').first()
