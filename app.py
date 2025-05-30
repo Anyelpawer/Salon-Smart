@@ -88,6 +88,15 @@ def dashboard_raquel():
         return redirect(url_for('login'))
     return render_template('dashboard_raquel.html', nombre=session['nombre'])
 
+@app.route('/verificar_raquel')
+def verificar_raquel():
+    user = Usuario.query.filter_by(usuario='raquel').first()
+    if user:
+        return f'✅ Raquel existe: {user.nombre}'
+    else:
+        return '❌ Raquel no existe.'
+
+
 
 # ✅ RUTA INICIO: Redirecciona según sesión
 @app.route('/')
