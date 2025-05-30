@@ -11,8 +11,20 @@ import os
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
-# Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salon_smart.db'
+# Configuración de la base de datos para persistencia en Render
+PERSISTENT_DIR = '/var/data'
+DB_FILENAME = 'salon_smart.db'
+DB_PATH = os.path.join(PERSISTENT_DIR, DB_FILENAME)
+
+# Crear el directorio si no existe
+os.makedirs(PERSISTENT_DIR, exist_ok=True)
+
+# Mover la base de datos si está en el root del proyecto
+if os.path.exists(DB_FILENAME) and not os.path.exists(DB_PATH):
+    os.rename(DB_FILENAME, DB_PATH)
+
+# Configurar SQLAlchemy con la nueva ruta
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_PATH}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -312,7 +324,7 @@ def disminuir_stock(producto_id):
 
         flash(f'Se disminuyó el stock de {producto.nombre}.')
     else:
-        flash('No se puede reducir más el stock.')
+        flash('No se puede reducir más el stock. {producto.nombre} ya está en cero.')
 
     return redirect(url_for('inventario'))
 
