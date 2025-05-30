@@ -64,9 +64,11 @@ def login():
         usuario = request.form['usuario'].strip().lower()
         contraseña = request.form['contraseña'].strip()
 
-        user = Usuario.query.filter_by(usuario=usuario, contraseña=contraseña).first()
+        # Buscar solo por usuario
+        user = Usuario.query.filter_by(usuario=usuario).first()
 
-        if user:
+        # Validar si encontró el usuario y la contraseña es correcta
+        if user and user.contraseña == contraseña:
             if user.usuario == 'raquel':
                 session['usuario'] = user.usuario
                 session['nombre'] = user.nombre
@@ -79,6 +81,7 @@ def login():
             return redirect(url_for('login'))
 
     return render_template('login.html')
+
 
 
 # ✅ NUEVA RUTA: Dashboard para Raquel
