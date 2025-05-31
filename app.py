@@ -12,7 +12,7 @@ app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
 # Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
