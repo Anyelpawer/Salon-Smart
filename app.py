@@ -18,7 +18,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 conn = psycopg2.connect(DATABASE_URL)
 cur = conn.cursor()
 
-db.init_app(app)
+db = SQLAlchemy(app)
 
 zona_nicaragua = pytz.timezone('America/Managua')
 
