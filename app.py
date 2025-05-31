@@ -45,6 +45,7 @@ def registrar_usuario():
 
     return render_template('registrar_usuario.html')
 
+
 # ✅ NUEVA RUTA: Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -52,18 +53,15 @@ def login():
         usuario = request.form['usuario'].strip().lower()
         contraseña = request.form['contraseña'].strip()
 
-        # Buscar solo por usuario
-        user = Usuario.query.filter_by(usuario=usuario).first()
+        user = Usuario.query.filter_by(usuario=usuario, contraseña=contraseña).first()
+        if user:
+            session['usuario'] = user.usuario
+            session['nombre'] = user.nombre
 
-        # Validar si encontró el usuario y la contraseña es correcta
-        if user and user.contraseña == contraseña:
             if user.usuario == 'raquel':
-                session['usuario'] = user.usuario
-                session['nombre'] = user.nombre
                 return redirect(url_for('dashboard_raquel'))
             else:
-                flash('Acceso denegado. Solo Raquel tiene acceso al sistema.')
-                return redirect(url_for('login'))
+                return redirect(url_for('dashboard_usuario'))
         else:
             flash('Usuario o contraseña incorrectos.')
             return redirect(url_for('login'))
@@ -79,26 +77,12 @@ def dashboard_raquel():
         return redirect(url_for('login'))
     return render_template('dashboard_raquel.html', nombre=session['nombre'])
 
-@app.route('/verificar_raquel')
-def verificar_raquel():
-    user = Usuario.query.filter_by(usuario='raquel').first()
-    if user:
-        return f"Usuario Raquel existe. Contraseña: {user.contraseña}"
-    else:
-        return "Usuario Raquel no encontrado"
-
-@app.route('/crear_raquel')
-def crear_raquel():
-    user = Usuario.query.filter_by(usuario='raquel').first()
-    if not user:
-        nueva = Usuario(nombre='Raquel', usuario='raquel', contraseña='12345')
-        db.session.add(nueva)
-        db.session.commit()
-        return '✅ Raquel creada correctamente con contraseña 1234'
-    else:
-        return '⚠️ Raquel ya existe.'
-
-
+# ✅ NUEVA RUTA: Dashboard para otros usuarios
+@app.route('/dashboard_usuario')
+def dashboard_usuario():
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+    return render_template('dashboard_usuario.html', nombre=session['nombre'])
 
 
 # ✅ RUTA INICIO: Redirecciona según sesión
