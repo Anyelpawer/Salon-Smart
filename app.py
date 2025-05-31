@@ -12,7 +12,7 @@ app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
 # Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://if0_39122627:Sm8f8KUFBuPlp@sql302.infinityfree.com/if0_39122627_salon_smart'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salon_smart.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
