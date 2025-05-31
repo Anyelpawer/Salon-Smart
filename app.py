@@ -4,32 +4,21 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from models import db, Cliente, Producto, Factura, DetalleFactura, MovimientoProducto, Usuario  # ✅ AÑADIDO: modelo Usuario
 from datetime import datetime
+import psycopg2
 import pytz
 import re
 import os
 
-# Inicializamos la app de Flask
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
-# Configuración de la base de datos para persistencia en Render o local
-PERSISTENT_DIR = os.environ.get("RENDER_DATA_DIR", "./data")
-DB_FILENAME = 'salon_smart.db'
-DB_PATH = os.path.join(PERSISTENT_DIR, DB_FILENAME)
+# Leer URL de conexión desde variable de entorno
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
-# Crear el directorio si no existe
-os.makedirs(PERSISTENT_DIR, exist_ok=True)
+conn = psycopg2.connect(DATABASE_URL)
+cur = conn.cursor()
 
-# Mover la base de datos si está en el root del proyecto
-if os.path.exists(DB_FILENAME) and not os.path.exists(DB_PATH):
-    os.rename(DB_FILENAME, DB_PATH)
-
-# Configurar SQLAlchemy con la nueva ruta
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Inicializar SQLAlchemy
-db = SQLAlchemy(app)  # ← ¡Aquí está el detalle importante!
+db.init_app(app)
 
 zona_nicaragua = pytz.timezone('America/Managua')
 
