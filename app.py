@@ -1,6 +1,6 @@
 # ✅ app.py con sistema de login y roles
 # Comentado paso a paso para que sepas qué se agregó y qué se modificó
-
+from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from models import db, Cliente, Producto, Factura, DetalleFactura, MovimientoProducto, Usuario  # ✅ AÑADIDO: modelo Usuario
 from datetime import datetime
@@ -8,10 +8,11 @@ import pytz
 import re
 import os
 
+# Inicializamos la app de Flask
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
-# Configuración de la base de datos para persistencia en Render
+# Configuración de la base de datos para persistencia en Render o local
 PERSISTENT_DIR = os.environ.get("RENDER_DATA_DIR", "./data")
 DB_FILENAME = 'salon_smart.db'
 DB_PATH = os.path.join(PERSISTENT_DIR, DB_FILENAME)
@@ -27,7 +28,8 @@ if os.path.exists(DB_FILENAME) and not os.path.exists(DB_PATH):
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app)
+# Inicializar SQLAlchemy
+db = SQLAlchemy(app)  # ← ¡Aquí está el detalle importante!
 
 zona_nicaragua = pytz.timezone('America/Managua')
 
