@@ -24,7 +24,7 @@ if os.path.exists(DB_FILENAME) and not os.path.exists(DB_PATH):
     os.rename(DB_FILENAME, DB_PATH)
 
 # Configurar SQLAlchemy con la nueva ruta
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/database.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
