@@ -4,21 +4,32 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from models import db, Cliente, Producto, Factura, DetalleFactura, MovimientoProducto, Usuario  # ✅ AÑADIDO: modelo Usuario
 from datetime import datetime
-import psycopg2
+from dotenv import load_dotenv
 import pytz
 import re
 import os
 
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
+
+# Crear la app de Flask
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'clave_secreta'
 
-# Leer URL de conexión desde variable de entorno
-DATABASE_URL = os.environ.get("DATABASE_URL")
+# Configurar la base de datos desde la variable de entorno
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-conn = psycopg2.connect(DATABASE_URL)
-cur = conn.cursor()
+# Render necesita que postgres URL inicie con postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+# Configuración de SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Inicializar SQLAlchemy
 db = SQLAlchemy(app)
+
 
 zona_nicaragua = pytz.timezone('America/Managua')
 
