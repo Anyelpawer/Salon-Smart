@@ -1,11 +1,9 @@
-# ✅ app.py con sistema de login y roles
-# Comentado paso a paso para que sepas qué se agregó y qué se modificó
-from flask_sqlalchemy import SQLAlchemy
+# ✅ app.py con sistema de login, roles y gestión de usuarios
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from models import db, Cliente, Producto, Factura, DetalleFactura, MovimientoProducto, Usuario  # ✅ AÑADIDO: modelo Usuario
+from flask_sqlalchemy import SQLAlchemy
+from models import db, Cliente, Producto, Factura, DetalleFactura, MovimientoProducto, Usuario
 from datetime import datetime
 from dotenv import load_dotenv
-from app import db
 import pytz
 import re
 import os
@@ -19,8 +17,6 @@ app.secret_key = 'clave_secreta'
 
 # Configurar la base de datos desde la variable de entorno
 DATABASE_URL = os.getenv("DATABASE_URL")
-
-# Render necesita que postgres URL inicie con postgresql://
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
@@ -29,12 +25,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializar SQLAlchemy
-db = SQLAlchemy(app)
-
+db.init_app(app)
 
 zona_nicaragua = pytz.timezone('America/Managua')
 
-# ✅ NUEVA RUTA: Registro de usuarios
+# ✅ RUTA: Registro de usuario
 @app.route('/registrar_usuario', methods=['GET', 'POST'])
 def registrar_usuario():
     if request.method == 'POST':
@@ -46,7 +41,6 @@ def registrar_usuario():
             flash('Todos los campos son obligatorios.')
             return redirect(url_for('registrar_usuario'))
 
-        # Validar que no exista el usuario
         existente = Usuario.query.filter_by(usuario=usuario).first()
         if existente:
             flash('El usuario ya existe.')
@@ -60,8 +54,7 @@ def registrar_usuario():
 
     return render_template('registrar_usuario.html')
 
-
-# ✅ NUEVA RUTA: Login
+# ✅ RUTA: Login de usuario
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -83,24 +76,19 @@ def login():
 
     return render_template('login.html')
 
-
-
-# ✅ NUEVA RUTA: Dashboard para Raquel
+# ✅ RUTA: Dashboards por rol
 @app.route('/dashboard_raquel')
 def dashboard_raquel():
     if 'usuario' not in session or session['usuario'] != 'raquel':
         return redirect(url_for('login'))
     return render_template('dashboard_raquel.html', nombre=session['nombre'])
 
-# ✅ NUEVA RUTA: Dashboard para otros usuarios
 @app.route('/dashboard_usuario')
 def dashboard_usuario():
     if 'usuario' not in session:
         return redirect(url_for('login'))
     return render_template('dashboard_usuario.html', nombre=session['nombre'])
 
-
-# ✅ RUTA INICIO: Redirecciona según sesión
 @app.route('/')
 def index():
     if 'usuario' in session:
@@ -108,9 +96,8 @@ def index():
             return redirect(url_for('dashboard_raquel'))
         else:
             return redirect(url_for('dashboard_usuario'))
-    return render_template('index.html')  # PÚBLICA
+    return render_template('index.html')
 
-# ✅ RUTA LOGOUT
 @app.route('/logout')
 def logout():
     session.clear()
