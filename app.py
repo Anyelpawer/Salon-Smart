@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from models import db, Cliente, Producto, Factura, DetalleFactura, MovimientoProducto, Usuario  # ✅ AÑADIDO: modelo Usuario
 from datetime import datetime
 from dotenv import load_dotenv
+from app import db
 import pytz
 import re
 import os
